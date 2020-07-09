@@ -1,0 +1,89 @@
+openapi: 3.0.0
+info:
+  version: 0.1.0
+  title: Demo App Listing
+  description: Demo app listing for openapi validation
+  contact:
+    name: Demo
+    url: https://example.com/
+    email: mail@example.com
+  license:
+    name: MIT
+paths:
+  '/ping':
+    summary: the health check api
+    get:
+      tags: 
+        - OpsApi
+        - ReadAPIs
+      responses:
+        200:
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    description: message
+                    type: string
+                    example: pong
+        503:
+          description: Service Unavailable
+          content:
+            text/plain:
+              schema:
+                type: string
+                example: Internal server error, service unavailable
+  
+  '/v1/demo':
+    parameters:
+      - name: uname
+        in: header
+        description: Logged in user's name
+        required: true
+        schema:
+          type: string
+          minLength: 3
+    summary: Returns the list of demo applications
+    get:
+      operationId: homePage
+      tags:
+        - HomePageAPIs
+        - ReadAPIs
+      responses:
+        200:
+          description: Successful retrival for list of de o applications
+          content:
+            application/json:
+              schema:
+                type: array
+                example: [{appName: "ExampleTamilApp", owner: "owner name", country: [IN,SL], language: "tamil"},{appName: "ExampleEnglishApp", owner: "owner name", country: [UK,LON], language: "english"}]
+                items:
+                  type: object
+                  properties:
+                    appName:
+                      type: string
+                      description: name of the application
+                    owner:
+                      type: string
+                      description: owner of the application
+                    country:
+                      type: array
+                      items:
+                        type: string
+                        example: UK, LON
+                    language:
+                      type: string
+                      description: language of the app
+        400:
+          description: Bad Request, uname fiewld is required in the headers
+
+
+tags:
+  - name: HomePageAPIs
+    description: Home page apis
+  - name: OpsApi
+    description: Operational APIs
+  - name: ReadAPIs
+    description: APIs that are used for read only operations
